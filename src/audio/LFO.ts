@@ -1,4 +1,4 @@
-import type { LfoParams, LfoWaveform, LfoTarget } from './types.ts';
+import type { LfoParams, LfoWaveform, LfoTarget } from './types'
  
 // Maximum LFO depth per target. These are hardware-inspired upper bounds —
 // wide enough for expressive modulation without destroying the bass character.

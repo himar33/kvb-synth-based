@@ -1,4 +1,4 @@
-import type { VcfParams } from './types.ts';
+import type { VcfParams } from './types'
  
 // Maximum frequency contribution from EG modulation in Hz.
 // At egIntensity=1 the EG can add up to this much above the base cutoff,

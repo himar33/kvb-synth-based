@@ -1,4 +1,4 @@
-import type { EgParams } from './types.ts';
+import type { EgParams } from './types';
  
 export class EG {
   private params: EgParams;

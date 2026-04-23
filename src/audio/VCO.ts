@@ -1,4 +1,4 @@
-import type { VcoParams, VcoWaveform, VcoGroupingMode } from './types.ts';
+import type { VcoParams, VcoWaveform, VcoGroupingMode } from './types'
  
 // Standard equal-temperament conversion. A4 (MIDI 69) = 440 Hz.
 function midiToHz(note: number): number {

@@ -1,4 +1,4 @@
-import type { EngineParams, VcoWaveform, VcoGroupingMode, LfoWaveform, LfoTarget } from './types.ts';
+import type { EngineParams, VcoWaveform, VcoGroupingMode, LfoWaveform, LfoTarget } from './types.ts'
 import { VCO } from './VCO.ts';
 import { VCF } from './VCF.ts';
 import { EG }  from './EG.ts';
@@ -73,17 +73,22 @@ export class AudioEngine {
     eg.start();  // starts egSource ConstantSourceNode
   }
  
-  triggerNote(pitch: number, _velocity: number): void {
+  triggerNote(pitch: number, _velocity: number, time?: number): void {
     // _velocity: Volca Bass hardware ignores velocity; parameter kept for API completeness.
     const { ctx, vco, lfo, eg } = this.require();
     vco.setNote(pitch);
     lfo.retrigger();
-    eg.noteOn(ctx.currentTime);
+    eg.noteOn(time ?? ctx.currentTime);
+  }
+
+  triggerNoteSlide(pitch: number): void {
+    const { vco } = this.require();
+    vco.setNote(pitch)
   }
  
-  releaseNote(): void {
+  releaseNote(time?: number): void {
     const { ctx, eg } = this.require();
-    eg.noteOff(ctx.currentTime);
+    eg.noteOff(time ?? ctx.currentTime);
   }
  
   // ── VCO setters ─────────────────────────────────────────────────────────
@@ -148,6 +153,12 @@ export class AudioEngine {
     this.eg  = null;
     this.lfo = null;
     this.vca = null;
+  }
+
+  // ── Getters ──────────────────────────────────────────────────────────
+
+  getAudioContext(): AudioContext {
+    return this.require().ctx;
   }
  
   private require(): { ctx: AudioContext; vco: VCO; vcf: VCF; eg: EG; lfo: LFO; vca: VCA } {

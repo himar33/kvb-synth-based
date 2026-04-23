@@ -1,4 +1,4 @@
-import type { VcaParams } from './types.ts';
+import type { VcaParams } from './types'
  
 export class VCA {
   // EG animates this gain (0→1) exclusively. Keeping it separate from tremolo
