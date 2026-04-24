@@ -14,6 +14,7 @@ function makeEmptySequence(): SequenceData {
   };
 }
 export class Sequencer {
+  onStep: ((stepIndex: number) => void) | null = null;
   private currentStep = 0;
   private nextStepTime = 0;
   private isPlaying = false;
@@ -116,6 +117,11 @@ export class Sequencer {
       this.engine.releaseNote(time);
     }
     this.lastScheduledStep = step;
+    if (this.onStep !== null) {
+      const delay = Math.max(0, (time - this.audioCtx.currentTime) * 1000);
+      const cb = this.onStep;
+      setTimeout(() => { cb(stepIndex); }, delay);
+    }
   }
   private getStepDuration(): number {
     // One 16th note at current tempo.

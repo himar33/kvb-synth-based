@@ -1,0 +1,510 @@
+/* ── Design tokens ─────────────────────────────────────────────────────── */
+:root {
+  --bg-panel:         #1c1c1c;
+  --bg-section:       #141414;
+  --bg-inset:         #0e0e0e;
+  --border-subtle:    #2e2e2e;
+  --border-bright:    #444;
+
+  --knob-body:        #7a7a7a;
+  --knob-body-hi:     #a0a0a0;
+  --knob-track:       #2a2a2a;
+  --knob-active:      #c0a060;
+  --knob-indicator:   #e0e0e0;
+
+  --led-top-off:      #2a0000;
+  --led-top-on:       #ff2222;
+  --led-top-glow:     rgba(255, 34, 34, 0.6);
+  --led-top-play:     #ff6666;
+  --led-top-playglow: rgba(255, 100, 100, 0.8);
+
+  --led-bot-off:      #1a1000;
+  --led-bot-on:       #ff9900;
+  --led-bot-glow:     rgba(255, 153, 0, 0.6);
+
+  --display-bg:       #080400;
+  --display-on:       #ffa500;
+  --display-glow:     rgba(255, 165, 0, 0.4);
+  --display-off:      #1a0900;
+
+  --btn-bg:           #222;
+  --btn-hover:        #2e2e2e;
+  --btn-border:       #3a3a3a;
+
+  --text-bright:      #e0e0e0;
+  --text-mid:         #888;
+  --text-dim:         #555;
+
+  --korg-red:         #e82020;
+  --font-ui:          'Helvetica Neue', Arial, sans-serif;
+  --font-mono:        'Courier New', Courier, monospace;
+}
+
+/* ── Reset / base ──────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #111;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 12px;
+  font-family: var(--font-ui);
+}
+
+/* ── Outer panel ───────────────────────────────────────────────────────── */
+.volca-panel {
+  background: var(--bg-panel);
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  min-width: 860px;
+  max-width: 1080px;
+  width: 100%;
+  padding: 20px 24px 24px;
+}
+
+/* ── Header ────────────────────────────────────────────────────────────── */
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.panel-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 80px;
+}
+
+.brand-korg {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--korg-red);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.brand-model {
+  font-size: 11px;
+  color: var(--text-mid);
+  font-style: italic;
+  letter-spacing: 0.12em;
+}
+
+/* ── 7-segment display ─────────────────────────────────────────────────── */
+.panel-display-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.display-label {
+  font-size: 8px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.display {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--display-bg);
+  border: 1px solid #1a1000;
+  border-radius: 4px;
+  padding: 6px 10px;
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.9);
+}
+
+.seg-digit {
+  position: relative;
+  width: 22px;
+  height: 38px;
+}
+
+/* Horizontal segments: a (top), g (middle), d (bottom) */
+.seg-a, .seg-g, .seg-d {
+  position: absolute;
+  width: 14px;
+  height: 3px;
+  left: 4px;
+  background: var(--display-off);
+  border-radius: 1px;
+  transition: background 60ms, box-shadow 60ms;
+}
+.seg-a { top: 0; }
+.seg-g { top: 17px; }
+.seg-d { bottom: 0; }
+
+/* Vertical segments: f (top-left), b (top-right), e (bottom-left), c (bottom-right) */
+.seg-b, .seg-c, .seg-e, .seg-f {
+  position: absolute;
+  width: 3px;
+  height: 15px;
+  background: var(--display-off);
+  border-radius: 1px;
+  transition: background 60ms, box-shadow 60ms;
+}
+.seg-f { top: 2px; left: 0; }
+.seg-b { top: 2px; right: 0; }
+.seg-e { bottom: 2px; left: 0; }
+.seg-c { bottom: 2px; right: 0; }
+
+.seg.on {
+  background: var(--display-on);
+  box-shadow: 0 0 5px var(--display-on), 0 0 10px var(--display-glow);
+}
+
+/* ── Memory ────────────────────────────────────────────────────────────── */
+.panel-memory-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.section-label {
+  font-size: 8px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.memory-slots {
+  display: flex;
+  gap: 4px;
+}
+
+.mem-slot-btn {
+  width: 26px;
+  height: 26px;
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: 3px;
+  color: var(--text-dim);
+  font-size: 10px;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  transition: background 100ms, color 100ms, border-color 100ms;
+}
+
+.mem-slot-btn:hover {
+  background: var(--btn-hover);
+  color: var(--text-mid);
+  border-color: var(--border-bright);
+}
+
+.mem-slot-btn.has-data {
+  border-color: #664;
+  color: #aa8;
+}
+
+/* ── Transport ─────────────────────────────────────────────────────────── */
+.panel-transport {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+/* ── Hardware buttons (generic) ────────────────────────────────────────── */
+.hw-btn {
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: 4px;
+  color: var(--text-mid);
+  font-size: 10px;
+  font-family: var(--font-ui);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 7px 12px;
+  cursor: pointer;
+  transition: background 80ms, color 80ms, border-color 80ms;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.hw-btn:hover {
+  background: var(--btn-hover);
+  color: var(--text-bright);
+  border-color: var(--border-bright);
+}
+
+.hw-btn.active {
+  background: #333;
+  color: var(--text-bright);
+  border-color: #666;
+}
+
+.play-btn {
+  background: #0d2210;
+  color: #4c8;
+  border-color: #1a4420;
+}
+.play-btn:hover { background: #122e16; border-color: #2a6030; color: #6fa; }
+.play-btn.active { background: #1a4420; color: #8fe; border-color: #3a8040; }
+
+.stop-btn {
+  background: #2a0d0d;
+  color: #c44;
+  border-color: #4a1a1a;
+}
+.stop-btn:hover { background: #3a1212; border-color: #6a2a2a; color: #f66; }
+
+.vco-btn.active { background: #2a2010; color: #ca8; border-color: #5a4020; }
+.vco-btn.muted  { background: #2a0000; color: #844; border-color: #5a1010; }
+
+.func-btn.active { background: #1a1830; color: #88c; border-color: #3a3860; }
+
+.stepmode-btn.active { background: #102030; color: #4af; border-color: #204060; }
+
+.oct-btn { padding: 5px 9px; font-size: 13px; line-height: 1; }
+
+/* ── Knobs section ─────────────────────────────────────────────────────── */
+.panel-knobs-section {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.knob-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-section);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 10px 12px 8px;
+}
+
+.knob-group-label {
+  font-size: 8px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  width: 100%;
+
+  text-align: center;
+}
+
+.knobs-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+/* ── Knob component ────────────────────────────────────────────────────── */
+.knob {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: ns-resize;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.knob-svg { overflow: visible; display: block; }
+
+.knob-track {
+  fill: none;
+  stroke: var(--knob-track);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.knob-body {
+  fill: var(--knob-body);
+  stroke: #555;
+  stroke-width: 1;
+  transition: fill 120ms;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+}
+
+.knob:hover .knob-body,
+.knob.dragging .knob-body {
+  fill: var(--knob-body-hi);
+}
+
+.knob-indicator {
+  stroke: var(--knob-indicator);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.knob-label {
+  font-size: 8px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-align: center;
+  max-width: 56px;
+  word-break: break-all;
+}
+
+/* ── Controls row ──────────────────────────────────────────────────────── */
+.panel-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.control-label {
+  font-size: 9px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.flex-spacer { flex: 1; min-width: 8px; }
+
+.octave-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-section);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 4px 10px;
+}
+
+.octave-num {
+  font-size: 16px;
+  color: var(--text-bright);
+  font-family: var(--font-mono);
+  min-width: 16px;
+  text-align: center;
+}
+
+/* ── Step grid ─────────────────────────────────────────────────────────── */
+.panel-steps-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.steps-mode-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.led-info {
+  font-size: 9px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.led-demo {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.led-demo-active  { background: var(--led-top-on); box-shadow: 0 0 4px var(--led-top-glow); }
+.led-demo-playing { background: var(--led-top-play); box-shadow: 0 0 8px var(--led-top-playglow); }
+.led-demo-kb      { background: var(--led-bot-on); box-shadow: 0 0 4px var(--led-bot-glow); }
+
+.panel-steps {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: 6px;
+}
+
+/* ── Step button ───────────────────────────────────────────────────────── */
+.step-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  padding: 5px 4px;
+  background: var(--bg-section);
+  border: 1px solid var(--border-subtle);
+  border-radius: 5px;
+  cursor: pointer;
+  color: var(--text-dim);
+  height: 58px;
+  transition: background 60ms, border-color 60ms;
+}
+
+.step-btn:hover {
+  background: var(--btn-hover);
+  border-color: var(--border-bright);
+}
+
+.step-btn:active {
+  background: #2a2a2a;
+}
+
+.step-btn.keyboard-mode {
+  cursor: pointer;
+  background: #101820;
+  border-color: #1a3040;
+}
+
+.step-btn.keyboard-mode:hover {
+  background: #182030;
+  border-color: #2a4060;
+}
+
+.step-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transition: background 60ms, box-shadow 60ms;
+}
+
+.step-led-top {
+  background: var(--led-top-off);
+}
+
+.step-led-top.led-active {
+  background: var(--led-top-on);
+  box-shadow: 0 0 5px var(--led-top-glow);
+}
+
+.step-led-top.led-playing {
+  background: var(--led-top-play);
+  box-shadow: 0 0 8px var(--led-top-playglow), 0 0 16px rgba(255, 80, 80, 0.4);
+}
+
+.step-led-bottom {
+  background: var(--led-bot-off);
+}
+
+.step-led-bottom.led-active {
+  background: var(--led-bot-on);
+  box-shadow: 0 0 5px var(--led-bot-glow);
+}
+
+.step-num {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  line-height: 1;
+}
